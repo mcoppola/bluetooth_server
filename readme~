@@ -1,11 +1,12 @@
 Bluetooth Server
+For Touch Gesture Data
 
 To Open Serial Port on Debain Linux:
 
-sdptool browse local
+	sdptool browse local
 
-stdptool add --channel=22 SP
+	stdptool add --channel=22 SP
 
-sudo rfcomm listen /dev/rfcomm0 22
+	sudo rfcomm listen /dev/rfcomm0 22
 
-start bt_server.py
+	start bt_server.py
