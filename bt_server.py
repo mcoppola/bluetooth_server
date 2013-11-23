@@ -34,7 +34,7 @@ class Point():
 		self.y = y
 
 
-# init bluetooth serverfloat(
+# init bluetooth server
 server_sock=BluetoothSocket( RFCOMM )
 server_sock.bind(("",22))
 server_sock.listen(1)
@@ -53,7 +53,7 @@ client_sock, client_info = server_sock.accept()
 print "Accepted connection from ", client_info
 
 # First message should contain window dimmentons
-# try to get it to init game window at same aspect ration
+# try to get it to init game window at same aspect ratio
 windowData = client_sock.recv(1024)
 print windowData
 pygame.init()
@@ -61,7 +61,7 @@ try:
 	clientWindow = MyWindowDecoder().decode(windowData)
 	window = pygame.display.set_mode((clientWindow.width, clientWindow.height))
 except Exception, e:
-	print 'did not get window size from client'
+	print 'Did not get window size from client'
 	print e
 	window = pygame.display.set_mode((640, 480))
 
@@ -71,9 +71,11 @@ points = [] # we will store the test point, the response, and the new test point
 pointCount = 0
 acc_sum = 0
 acc_master = 0
+pygame.display.set_caption('Bluetooth Target Practice')
 font = pygame.font.Font(None,30)
 acc = font.render("accuracy = " + str(acc_master), 1, (255,255,0))
 window.blit(acc, (100, 200))
+
 # game loop
 try:
 	while True:
@@ -85,9 +87,11 @@ try:
 		count = 0
 		for p in points:
 			if (count % 2 == 0):
+				pygame.draw.circle(window, (255, 0, 0), (p.x, p.y), 18, 5)
+				pygame.draw.circle(window, (255, 255, 255), (p.x, p.y), 12, 5)
 				pygame.draw.circle(window, (255, 0, 0), (p.x, p.y), 5)
 			else:
-				pygame.draw.circle(window, (255, 255, 255), (p.x, p.y), 5)
+				pygame.draw.circle(window, (255, 255, 255), (p.x, p.y), 8)
 			count += 1
 		pygame.display.flip()
 		data = client_sock.recv(1024)
@@ -95,7 +99,7 @@ try:
 		if len(data) == 0: break
 		print "received [%s]" % data
 
-		# got response print response, old target, and new target
+		# got response. print it, old target, and new target
 		try:
 			point = MyPointDecoder().decode(data)
 			points.append(point)
@@ -115,8 +119,8 @@ try:
 			accuracy = ((100 - (math.fabs(target.x - point.x)/clientWindow.width)*100) - (math.fabs(target.y - point.y)/clientWindow.height)*100)
 			acc_sum = acc_sum + accuracy 
 			acc_master = acc_sum / pointCount
-			acc = font.render("accuracy = " + str(acc_master), 1, (255,0,255))
-			window.blit(acc, (0, 5))
+			acc = font.render("accuracy = " + str(acc_master), 1, (255,255,255))
+			window.blit(acc, (10, 5))
 			print acc_master
 		except Exception, e:
 			print str(e)
@@ -125,7 +129,7 @@ except IOError:
     pass
 
 print "disconnected"
-
+pygame.quit()
 client_sock.close()
 server_sock.close()
 print "all done"
