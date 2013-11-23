@@ -1,0 +1,11 @@
+Bluetooth Server
+
+To Open Serial Port on Debain Linux:
+
+sdptool browse local
+
+stdptool add --channel=22 SP
+
+sudo rfcomm listen /dev/rfcomm0 22
+
+start bt_server.py
