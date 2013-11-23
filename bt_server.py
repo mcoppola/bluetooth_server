@@ -1,5 +1,7 @@
-
-# $Id: rfcomm-server.py 518 2007-08-10 07:20:07Z albert $
+# Matthew Coppola
+#
+# Bluetooth server and touch accuracy game
+# For browser box protype
 from bluetooth import *
 from random import randint
 import sys, pygame, json, math
@@ -8,30 +10,22 @@ class MyPointDecoder(json.JSONDecoder):
 
 	def __init__(self):
 		json.JSONDecoder.__init__(self, object_hook=self.dict_to_object)
-		self.x = 0
-		self.y = 0
 
 	def dict_to_object(self, d):
 		if 'x' in d:
 			self.x = int(math.floor(float(d.pop('x'))))
 			self.y = int(math.floor(float(d.pop('y'))))
-		else:
-			inst = d
 		return self
 
 class MyWindowDecoder(json.JSONDecoder):
 
 	def __init__(self):
 		json.JSONDecoder.__init__(self, object_hook=self.dict_to_object)
-		self.x = 0
-		self.y = 0
 
 	def dict_to_object(self, d):
 		if 'width' in d:
 			self.width = int(math.floor(float(d.pop('width'))))
 			self.height = int(math.floor(float(d.pop('height'))))
-		else:
-			inst = d
 		return self
 
 class Point():
