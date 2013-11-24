@@ -52,7 +52,7 @@ print "Waiting for connection on RFCOMM channel %d" % port
 client_sock, client_info = server_sock.accept()
 print "Accepted connection from ", client_info
 
-# First message should contain window dimmentons
+# First message from client should contain window dimmentons
 # try to get it to init game window at same aspect ratio
 windowData = client_sock.recv(1024)
 print windowData
@@ -73,22 +73,21 @@ acc_sum = 0
 acc_master = 0
 pygame.display.set_caption('Bluetooth Target Practice')
 font = pygame.font.Font(None,30)
-acc = font.render("accuracy = " + str(acc_master), 1, (255,255,0))
-window.blit(acc, (100, 200))
+acc = font.render("accuracy = 100", 1, (255,255,0))
+window.blit(acc, [10, 10])
+pygame.display.flip()
 
 # game loop
 try:
 	while True:
-		# clear window
-		window.fill((0,0,0))
 		# make target, wait for response
 		target = Point(randint(0,clientWindow.width), randint(0,clientWindow.height))
 		points.append(target)
 		count = 0
 		for p in points:
 			if (count % 2 == 0):
-				pygame.draw.circle(window, (255, 0, 0), (p.x, p.y), 18, 5)
-				pygame.draw.circle(window, (255, 255, 255), (p.x, p.y), 12, 5)
+				pygame.draw.circle(window, (255, 0, 0), (p.x, p.y), 70, 5)
+				pygame.draw.circle(window, (255, 255, 255), (p.x, p.y), 12, 2)
 				pygame.draw.circle(window, (255, 0, 0), (p.x, p.y), 5)
 			else:
 				pygame.draw.circle(window, (255, 255, 255), (p.x, p.y), 8)
@@ -115,13 +114,18 @@ try:
 			points.append(target)
 			points.append(point)
 
-			# calculate accuracy
-			accuracy = ((100 - (math.fabs(target.x - point.x)/clientWindow.width)*100) - (math.fabs(target.y - point.y)/clientWindow.height)*100)
+			# clear window
+			window.fill((0,0,0))
+
+			# calculate accuracy 
+			# users point - 12 for the center target radius
+			accuracy = ((100 - ((math.fabs(target.x - point.x) - 12)/clientWindow.width)*100) - ((math.fabs(target.y - point.y) - 12)/clientWindow.height)*100)
 			acc_sum = acc_sum + accuracy 
 			acc_master = acc_sum / pointCount
-			acc = font.render("accuracy = " + str(acc_master), 1, (255,255,255))
-			window.blit(acc, (10, 5))
-			print acc_master
+			acc = font.render("accuracy = " + str(acc_master), 1, (255,255,0))
+			window.blit(acc, [10, 10])
+			pygame.display.flip()
+
 		except Exception, e:
 			print str(e)
 
