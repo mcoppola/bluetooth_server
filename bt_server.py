@@ -71,6 +71,8 @@ points = [] # we will store the test point, the response, and the new test point
 pointCount = 0
 acc_sum = 0
 acc_master = 0
+distanceAv = 0
+distanceSum = 0
 pygame.display.set_caption('Bluetooth Target Practice')
 font = pygame.font.Font(None,30)
 acc = font.render("accuracy = 100", 1, (255,255,0))
@@ -85,10 +87,16 @@ try:
 		points.append(target)
 		count = 0
 		for p in points:
-			if (count % 2 == 0):
+			if (count == 0):
+				pygame.draw.circle(window, (255, 255, 0), (p.x, p.y), 70, 5)
+				pygame.draw.circle(window, (255, 255, 255), (p.x, p.y), 12, 2)
+				pygame.draw.circle(window, (255, 0, 0), (p.x, p.y), 5)
+				pygame.draw.circle(window, (0, 0, 255), (p.x, p.y), distanceAv, (distanceAv > 0) if 2 else distanceAv)
+			elif (count == 2):
 				pygame.draw.circle(window, (255, 0, 0), (p.x, p.y), 70, 5)
 				pygame.draw.circle(window, (255, 255, 255), (p.x, p.y), 12, 2)
 				pygame.draw.circle(window, (255, 0, 0), (p.x, p.y), 5)
+				pygame.draw.circle(window, (0, 0, 255), (p.x, p.y), distanceAv, (distanceAv > 0) if 2 else distanceAv)				
 			else:
 				pygame.draw.circle(window, (255, 255, 255), (p.x, p.y), 8)
 			count += 1
@@ -119,6 +127,10 @@ try:
 
 			# calculate accuracy 
 			# users point - 12 for the center target radius
+			distanceFromTarget = math.sqrt(math.pow(math.fabs(target.x - point.x), 2) + math.pow(math.fabs(target.y - point.y), 2))
+			distanceSum += distanceFromTarget
+			distanceAv = int(distanceSum / pointCount)
+			print distanceFromTarget
 			accuracy = ((100 - ((math.fabs(target.x - point.x) - 12)/clientWindow.width)*100) - ((math.fabs(target.y - point.y) - 12)/clientWindow.height)*100)
 			acc_sum = acc_sum + accuracy 
 			acc_master = acc_sum / pointCount
