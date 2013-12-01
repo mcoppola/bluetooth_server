@@ -5,7 +5,7 @@ To Open Serial Port on Debain Linux:
 
 	sdptool browse local
 
-	stdptool add --channel=22 SP
+	sdptool add --channel=22 SP
 
 sudo python bt_server.py  *(must be root to open pygame window)
 
